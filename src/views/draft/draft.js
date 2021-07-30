@@ -1,3 +1,4 @@
+/* eslint-disable */
 import ReactDOM from 'react-dom';
 import './style.css';
 import React, { Component,useState } from 'react';
@@ -13,8 +14,6 @@ function DraftDemo(){
         <a href="../draft.html">draft editor demo~</a> <br></br>
         <h3>Draft-WYSIWYG Editor</h3>
         <DraftApp/>
-        <ConvertToRawDraftContent />
-        <ConvertFromRawDraftContent/>
     </div>
 }
 
@@ -24,40 +23,26 @@ function DraftApp(){
 
     function handleEditorChange(event){
         setEditorState(event);
-        console.log("handling editor change");
-        console.log(event);
-        console.log(editorState);
     }
 
     function handleTextAreaChange(event){
         setRawContent(event.target.value)
-        console.log("handling text area change");
-        //console.log(event);
-        console.log(event.target.value);
     }
 
     function serializeJSONHandler(event){
-        console.log("serialize to JSON");
-        console.log(event);
-        console.log(JSON.stringify(convertToRaw(editorState.getCurrentContent())));
         setRawContent(JSON.stringify(convertToRaw(editorState.getCurrentContent())))
+        console.log("serialize")
         console.log(rawContent);
     }
 
     function deserializeJSONHandler(event){
-        console.log("deserialize from JSON");
-        console.log(event);
         console.log("rawContent:");
         console.log(rawContent);
         var ob = JSON.parse(rawContent);
         console.log("JSON parsed Content:");
         console.log(ob);
-        var ob2 = JSON.stringify(ob);
-        console.log("stringfy content");
-        console.log(ob2);
-
-        //见鬼了...
-        //console.log(convertFromRaw(rawContent));
+        var ob2 = convertFromRaw(ob);
+        setEditorState(EditorState.createWithContent(ob2))
     }
 
     return <div className="rdw-storybook-root">
@@ -125,18 +110,34 @@ export class ConvertToRawDraftContent extends Component {
 
 
 function ConvertFromRawDraftContent2(){
-    const [editorState,setEditorState] = useState();
+
+    /*
+    //load only once.
+    useEffect(() => {
+        textContent[1](content);
+    },[]);
+     */
+    var rawContent = {"blocks":[{"key":"e1fmv","text":"hello john!!!","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}}],"entityMap":{}};
+    const contentState = convertFromRaw(rawContent);
+    console.log("show raw content");
+    console.log(rawContent)
+    const [editorState,setEditorState] = useState(EditorState.createWithContent(contentState));
+
+    function changeHandler(event){
+        console.log(event);
+        setEditorState(event);
+    }
     return <div className="rdw-storybook-root">
-        <span>RAW Content: <pre>{'{"entityMap":{},"blocks":[{"key":"637gr","text":"Initialized from content state.","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}}]}'}</pre></span>
         <Editor
             editorState={editorState}
             toolbarClassName="rdw-storybook-toolbar"
             wrapperClassName="rdw-storybook-wrapper"
             editorClassName="rdw-storybook-editor"
-            onEditorStateChange={this.onEditorStateChange}
+            onEditorStateChange={(event)=>changeHandler(event)}
         />
     </div>;
 }
+
 class ConvertFromRawDraftContent extends Component {
     constructor(props) {
         super(props);

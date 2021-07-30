@@ -1,7 +1,6 @@
 /* eslint-disable */
 import React, { useState, useRef,useEffect, useCallback } from "react";
 import JoditEditor from "jodit-react";
-import {Input,Divider} from 'antd';
 import ReactDOM from "react-dom";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
@@ -16,10 +15,7 @@ function JoditDemo(){
 }
 
 //TODO:
-//bug1： deserialize之后，如果不对editor进行onBlur,serialize无法更新textContent...
-//原因：raw -> html依靠editor渲染。目前deserialize无法控制editor组件渲染。目前组件渲染只能通过setContent，这个在onBlur里。
-//nonetheless... draft里面的textarea就很正常。。。。
-//bug2：textarea每次input都会触发onChange，每个字母都会自动刷新组件，跳转到最上方...
+//bug：textarea每次input都会页面自动刷新跳转到最上方...
 
 //const { TextArea } = Input;
 function JoditApp() {
